@@ -3,6 +3,7 @@ package fiware.smartcity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.PointF;
@@ -13,6 +14,8 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -495,14 +498,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         councilLogo.setVisibility(RelativeLayout.GONE);
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        // remove title
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-
-        super.onCreate(savedInstanceState);
-        Application.mainActivity = this;
-
+    private void initMainActivity() {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
@@ -530,7 +526,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                     }
                 } else if (item.getItemId() == R.id.action_home) {
                     ((RelativeLayout) findViewById(R.id.routePlanningLayout)).
-                                                                setVisibility(RelativeLayout.GONE);
+                            setVisibility(RelativeLayout.GONE);
                     goHome();
                 } else if (item.getItemId() == R.id.action_pause) {
                     pauseSimulation();
@@ -640,6 +636,69 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
             }
         });
+    }
+
+    private void checkStoragePermission() {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED){
+
+            ActivityCompat.requestPermissions(
+                    this, new String[] {android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, Application.STORAGE_PERMISSION);
+
+        } else {
+            initMainActivity();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+
+        switch (requestCode) {
+            case Application.LOCATION_PERMISSION: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    checkStoragePermission();
+                } else {
+                    // Do something interesting
+                    Log.e(Application.TAG, "Error: Location permission is required to use the App");
+                    this.finish();
+                    System.exit(0);
+                }
+                return;
+            }
+            case Application.STORAGE_PERMISSION: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    initMainActivity();
+                } else {
+                    // Do something interesting
+                    Log.e(Application.TAG, "Error: Storage permission is required to use the App");
+                    this.finish();
+                    System.exit(0);
+                }
+                return;
+            }
+        }
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        // remove title
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        super.onCreate(savedInstanceState);
+
+        Application.mainActivity = this;
+
+        // Check app permissions
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(
+                    this, new String[] {android.Manifest.permission.ACCESS_FINE_LOCATION}, Application.LOCATION_PERMISSION);
+
+        } else {
+            checkStoragePermission();
+        }
     }
 
     public void calculateCurrentPosition(LocationListener callback) {
