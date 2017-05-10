@@ -130,12 +130,16 @@ public class AmbientAreaRenderer implements CityDataListener {
                     GeoCoordinate coords = new GeoCoordinate(ambientArea.location[0],
                             ambientArea.location[1]); */
 
-                    PointF f = hereMap.geoToPixel(currentPos);
-                    f.offset(100, 50);
-                    GeoCoordinate coords = hereMap.pixelToGeo(f);
+                    // TODO: Find a workarround for deprecated geoToPixel method
+                    // PointF f = hereMap.geoToPixel(currentPos);
+                    //f.offset(100, 50);
+                    //GeoCoordinate coords = hereMap.pixelToGeo(f);
 
-                    MapMarker marker = Utilities.buildSensorMarker(coords, "Air Quality",
-                            data.asString);
+                    //MapMarker marker = Utilities.buildSensorMarker(coords, "Air Quality",
+                    //        data.asString);
+
+                    MapMarker marker = Utilities.buildSensorMarker(currentPos, "Air Quality",
+                                    data.asString);
 
                     hereMap.addMapObject(marker);
                     Utilities.showBubble(marker);
@@ -170,7 +174,6 @@ public class AmbientAreaRenderer implements CityDataListener {
         polygon = (GeoPolygon)ambientArea.attributes.get("polygon");
         getDataFromSensors();
     }
-
 
     private MapPolygon doRender(String targetColor) {
         MapPolygon ambientAreaPolygon = null;
