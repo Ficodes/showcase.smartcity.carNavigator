@@ -86,6 +86,7 @@ public class RouteActivity implements LocationListener {
     private List<String> optionList2 = new ArrayList<>();
 
     private List<String> poiList = new ArrayList<>();
+    private Map<String, double[]> poiCoords = new HashMap<>();
 
     private static String[] CITIES = new String[] {
             "Oporto",
@@ -601,24 +602,38 @@ public class RouteActivity implements LocationListener {
             public void onCompleted(GeoCoordinate coords, ErrorCode errorCode) {
                 if (errorCode == ErrorCode.NONE) {
                     routeData.originCoordinates = coords;
-                    String destinationStr = routeData.destination;
-                    geoCodeLocation(destinationStr, destCoordinates, new ResultListener<GeoCoordinate>() {
-                        @Override
-                        public void onCompleted(GeoCoordinate geoCoordinate, ErrorCode errorCode) {
-                            if(errorCode == ErrorCode.NONE) {
-                                routeData.destinationCoordinates = geoCoordinate;
-                                if (routeData.originCoordinates != null && routeData.destinationCoordinates != null) {
-                                    doCalculateRoute(routeData.originCoordinates, routeData.destinationCoordinates);
+
+                    if (!isPoiDest) {
+                        // Uase the provided address to calculate destination coordinates
+                        String destinationStr = routeData.destination;
+                        geoCodeLocation(destinationStr, destCoordinates, new ResultListener<GeoCoordinate>() {
+                            @Override
+                            public void onCompleted(GeoCoordinate geoCoordinate, ErrorCode errorCode) {
+                                if(errorCode == ErrorCode.NONE) {
+
+                                    routeData.destinationCoordinates = geoCoordinate;
+                                    if (routeData.originCoordinates != null && routeData.destinationCoordinates != null) {
+                                        doCalculateRoute(routeData.originCoordinates, routeData.destinationCoordinates);
+                                    } else {
+                                        notifyErrorToUI();
+                                    }
                                 }
                                 else {
                                     notifyErrorToUI();
                                 }
                             }
-                            else {
-                                notifyErrorToUI();
-                            }
+                        });
+                    } else {
+                        // As the detination is a POI the destination coordinartes are already known
+                        double[] destCoords = poiCoords.get(routeData.poi);
+                        routeData.destinationCoordinates =  new GeoCoordinate(destCoords[0], destCoords[1]);
+
+                        if (routeData.originCoordinates != null && routeData.destinationCoordinates != null) {
+                            doCalculateRoute(routeData.originCoordinates, routeData.destinationCoordinates);
+                        } else {
+                            notifyErrorToUI();
                         }
-                    });
+                    }
                 }
                 else {
                     notifyErrorToUI();
@@ -695,12 +710,14 @@ public class RouteActivity implements LocationListener {
 
         @Override
         public void onCityDataReady(Map<String, List<Entity>> data) {
+            pendingRequest = false;
             List<Entity> result = data.get(Application.RESULT_SET_KEY);
             List<String> strings = new ArrayList<>();
 
             // Get POIs names
             for (Entity entity : result) {
                 strings.add((String) entity.attributes.get("name"));
+                poiCoords.put((String) entity.attributes.get("name"), entity.location);
             }
 
             // Update autosuggest adapter
@@ -709,8 +726,6 @@ public class RouteActivity implements LocationListener {
 
             view.setAdapter(adapter);
             adapter.notifyDataSetChanged();
-
-            pendingRequest = false;
         }
 
         @Override

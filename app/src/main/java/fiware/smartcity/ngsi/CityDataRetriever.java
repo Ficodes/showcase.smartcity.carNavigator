@@ -146,13 +146,59 @@ public class CityDataRetriever extends AsyncTask<CityDataRequest, Integer, Map<S
 
         // There could be entities (namely weather entities) without location
         if (location != null) {
-            locValue = location.getString("value");
+            // Location value can be provided as value or as coordinates
+            if (location.has("value")) {
+                // String coordinates format lat,long
+                locValue = location.getString("value");
+
+            } else if (location.has("coordinates")){
+                // List coordinates format [long, lat]
+                String [] pLoc = location.getString("coordinates").replace("[", "").replace("]", "").split(",");
+                locValue = pLoc[1] + "," + pLoc[0];
+            }
         }
+
         if (locValue != null) {
             String[] coordinates = locValue.split(",");
 
             ent.location = new double[]{Double.parseDouble(coordinates[0]),
                     Double.parseDouble(coordinates[1])};
+        }
+    }
+
+    private void fillAttributes(JSONObject obj, String type,
+                                Map<String, Object> attrs) throws Exception {
+        if (type.equals("TrafficEvent")) {
+
+        }
+        else if (type.equals(Application.AMBIENT_OBSERVED_TYPE)) {
+            fillAmbientObserved(obj,type,attrs);
+        }
+        else if (type.equals(Application.PARKING_LOT_TYPE) ||
+                type.equals(Application.STREET_PARKING_TYPE) ||
+                type.equals((Application.PARKING_LOT_ZONE_TYPE))) {
+            fillParking(obj, type, attrs);
+        }
+        else if (type.equals("CityEvent")) {
+
+        }
+        else if (type.equals(Application.AMBIENT_AREA_TYPE)) {
+            fillAmbientArea(obj,type,attrs);
+        }
+        else if (type.equals(Application.WEATHER_FORECAST_TYPE)) {
+            fillWeather(obj,type, attrs);
+        }
+        else if (type.equals(Application.GARAGE_TYPE)) {
+            fillGarage(obj, type, attrs);
+        }
+        else if (type.equals(Application.GAS_STATION_TYPE)) {
+            fillGasStation(obj, type, attrs);
+        }
+        else if (type.equals(Application.PARKING_RESTRICTION_TYPE)) {
+            fillParkingRestriction(obj, type, attrs);
+        }
+        else if (type.equals(Application.POI_TYPE)) {
+            fillPointOfInterest(obj, type, attrs);
         }
     }
 
@@ -225,37 +271,13 @@ public class CityDataRetriever extends AsyncTask<CityDataRequest, Integer, Map<S
         }
     }
 
-    private void fillAttributes(JSONObject obj, String type,
-                                Map<String, Object> attrs) throws Exception {
-        if (type.equals("TrafficEvent")) {
+    private void fillPointOfInterest (JSONObject obj, String type,
+                                      Map<String, Object> attrs) throws Exception {
 
-        }
-        else if (type.equals(Application.AMBIENT_OBSERVED_TYPE)) {
-            fillAmbientObserved(obj,type,attrs);
-        }
-        else if (type.equals(Application.PARKING_LOT_TYPE) ||
-                type.equals(Application.STREET_PARKING_TYPE) ||
-                type.equals((Application.PARKING_LOT_ZONE_TYPE))) {
-           fillParking(obj, type, attrs);
-        }
-        else if (type.equals("CityEvent")) {
+        getStringJSONAttr("name", obj, null, attrs);
+        getStringJSONAttr("description", obj, null, attrs);
+        getStringListJSONAttr("category", obj, null, attrs);
 
-        }
-        else if (type.equals(Application.AMBIENT_AREA_TYPE)) {
-            fillAmbientArea(obj,type,attrs);
-        }
-        else if (type.equals(Application.WEATHER_FORECAST_TYPE)) {
-            fillWeather(obj,type, attrs);
-        }
-        else if (type.equals(Application.GARAGE_TYPE)) {
-            fillGarage(obj, type, attrs);
-        }
-        else if (type.equals(Application.GAS_STATION_TYPE)) {
-            fillGasStation(obj, type, attrs);
-        }
-        else if (type.equals(Application.PARKING_RESTRICTION_TYPE)) {
-            fillParkingRestriction(obj, type, attrs);
-        }
     }
 
     private void fillGarage (JSONObject obj, String type,
@@ -433,6 +455,23 @@ public class CityDataRetriever extends AsyncTask<CityDataRequest, Integer, Map<S
         try {
             out = obj.getString(attr);
             attrs.put(mappedAttr, out);
+        }
+        catch(JSONException e) { }
+    }
+
+    private void getStringListJSONAttr(String attr, JSONObject obj, String mAttr,
+                                       Map<String, Object> attrs) {
+
+        String mappedAttr = mAttr != null ? mAttr : attr;
+
+        try {
+            List<String> resultAttrs = new ArrayList<>();
+            JSONArray values = obj.getJSONArray(mappedAttr);
+            for (int i = 0; i < values.length(); i++) {
+                resultAttrs.add(values.getString(i));
+            }
+
+            attrs.put(mappedAttr, resultAttrs);
         }
         catch(JSONException e) { }
     }
