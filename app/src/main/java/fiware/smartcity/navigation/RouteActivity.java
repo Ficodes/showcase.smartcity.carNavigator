@@ -616,10 +616,14 @@ public class RouteActivity implements LocationListener {
                     } else {
                         // As the detination is a POI the destination coordinartes are already known
                         double[] destCoords = poiCoords.get(routeData.poi);
-                        routeData.destinationCoordinates =  new GeoCoordinate(destCoords[0], destCoords[1]);
+                        if (destCoords != null) {
+                            routeData.destinationCoordinates =  new GeoCoordinate(destCoords[0], destCoords[1]);
 
-                        if (routeData.originCoordinates != null && routeData.destinationCoordinates != null) {
-                            doCalculateRoute(routeData.originCoordinates, routeData.destinationCoordinates);
+                            if (routeData.originCoordinates != null && routeData.destinationCoordinates != null) {
+                                doCalculateRoute(routeData.originCoordinates, routeData.destinationCoordinates);
+                            } else {
+                                notifyErrorToUI();
+                            }
                         } else {
                             notifyErrorToUI();
                         }
