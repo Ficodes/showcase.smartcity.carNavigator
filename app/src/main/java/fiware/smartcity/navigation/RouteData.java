@@ -14,6 +14,7 @@ public class RouteData {
     public String origin = "";
     public String city = "";
     public String destination = "";
+    public String poi = "";
     public int parkingDistance = 0;
     public List<String> parkingCategory = new ArrayList<String>();
     public String vehicle = "";
