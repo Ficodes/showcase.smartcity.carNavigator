@@ -13,8 +13,8 @@ public class RouteData {
     public String originCity = "";
     public String origin = "";
     public String city = "";
+    public Boolean isPoi = null;
     public String destination = "";
-    public String poi = "";
     public int parkingDistance = 0;
     public List<String> parkingCategory = new ArrayList<String>();
     public String vehicle = "";

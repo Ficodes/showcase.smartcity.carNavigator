@@ -176,6 +176,19 @@ public class RouteActivity implements LocationListener {
 
         setupNextEventHandler();
         setupHeader(2);
+
+        SharedPreferences prefs = Application.mainActivity.getPreferences(Context.MODE_WORLD_READABLE);
+        String lastCity = prefs.getString(Application.LAST_CITY_VISITED, Application.EMPTY_STR);
+
+        if (routeData.originCity.equals(lastCity)) {
+            if (routeData.isPoi == null) {
+                // Get saved value if route data is not initialized
+                isPoiDest = prefs.getBoolean(Application.IS_POI_DESTINATION, false);
+            } else {
+                isPoiDest = routeData.isPoi;
+            }
+        }
+
         setAutoCompleteHandlerDestination();
 
         // By default dest city equal to the origin city
@@ -184,16 +197,17 @@ public class RouteActivity implements LocationListener {
             routeData.city = routeData.originCity;
         }
 
-        SharedPreferences prefs = Application.mainActivity.getPreferences(Context.MODE_WORLD_READABLE);
-
-        if (routeData.originCity.equals(prefs.getString(Application.LAST_CITY_VISITED,
-                Application.EMPTY_STR))) {
-
-            isPoiDest = prefs.getBoolean(Application.IS_POI_DESTINATION, false);
-
+        if (routeData.originCity.equals(lastCity)) {
             AutoCompleteTextView lastDestText = isPoiDest ? poi: destination;
-            String lastDes = prefs.getString(Application.LAST_DESTINATION,
-                    Application.EMPTY_STR);
+            String lastDes;
+
+            if (routeData.destination.length() > 0) {
+                lastDes = routeData.destination;
+            } else {
+                lastDes = prefs.getString(Application.LAST_DESTINATION,
+                        Application.EMPTY_STR);
+            }
+
             lastDestText.setText(lastDes);
         }
         setupPOISwitchEventHandler();
@@ -341,9 +355,9 @@ public class RouteActivity implements LocationListener {
         city = (AutoCompleteTextView)activity.findViewById(R.id.cityInput);
         poi = (AutoCompleteTextView)activity.findViewById(R.id.destPoi);
 
-        setAutocompleteHandler(destination, optionList2, routeData.destination, false);
+        setAutocompleteHandler(destination, optionList2, isPoiDest ? "" : routeData.destination, false);
         setAutocompleteHandler(city, cityList, routeData.city, false);
-        setAutocompleteHandler(poi, poiList, routeData.poi, true);
+        setAutocompleteHandler(poi, poiList, isPoiDest ? routeData.destination : "", true);
 
         checkNextButton(null);
     }
@@ -355,8 +369,8 @@ public class RouteActivity implements LocationListener {
         }
         else if(currentStep.equals("Destination")) {
             routeData.city = city.getText().toString();
-            routeData.destination = destination.getText().toString();
-            routeData.poi = poi.getText().toString();
+            routeData.destination = isPoiDest ? poi.getText().toString(): destination.getText().toString();
+            routeData.isPoi = isPoiDest;
             currentStep = "Origin";
             goToOriginStep();
         }
@@ -376,8 +390,8 @@ public class RouteActivity implements LocationListener {
             goToDestinationStep();
         }
         else if(currentStep.equals("Destination")) {
-            routeData.destination = destination.getText().toString();
-            routeData.poi = poi.getText().toString();
+            routeData.destination = isPoiDest ? poi.getText().toString(): destination.getText().toString();
+            routeData.isPoi = isPoiDest;
             routeData.city = city.getText().toString();
             currentStep = "Parking";
             goToParkingStep();
@@ -575,10 +589,8 @@ public class RouteActivity implements LocationListener {
         edit.putString(Application.LAST_ORIGIN, routeData.origin);
 
 
-        edit.putBoolean(Application.IS_POI_DESTINATION, isPoiDest);
-        String destination = isPoiDest ? routeData.poi : routeData.destination;
-
-        edit.putString(Application.LAST_DESTINATION, destination);
+        edit.putBoolean(Application.IS_POI_DESTINATION, routeData.isPoi);
+        edit.putString(Application.LAST_DESTINATION, routeData.destination);
 
         edit.commit();
 
@@ -593,8 +605,8 @@ public class RouteActivity implements LocationListener {
                 if (errorCode == ErrorCode.NONE) {
                     routeData.originCoordinates = coords;
 
-                    if (!isPoiDest) {
-                        // Uase the provided address to calculate destination coordinates
+                    if (!routeData.isPoi) {
+                        // Use the provided address to calculate destination coordinates
                         String destinationStr = routeData.destination;
                         geoCodeLocation(destinationStr, destCoordinates, new ResultListener<GeoCoordinate>() {
                             @Override
@@ -615,7 +627,7 @@ public class RouteActivity implements LocationListener {
                         });
                     } else {
                         // As the detination is a POI the destination coordinartes are already known
-                        double[] destCoords = poiCoords.get(routeData.poi);
+                        double[] destCoords = poiCoords.get(routeData.destination);
                         if (destCoords != null) {
                             routeData.destinationCoordinates =  new GeoCoordinate(destCoords[0], destCoords[1]);
 
