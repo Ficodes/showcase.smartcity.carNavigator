@@ -89,32 +89,22 @@ public class RouteActivity implements LocationListener {
     private Map<String, double[]> poiCoords = new HashMap<>();
 
     private static String[] CITIES = new String[] {
-            "Oporto",
-            "Guadalajara",
             "Valencia",
             "Barcelona",
-            "Aveiro",
-            "Amsterdam",
             "Santander",
             "Sevilla",
             "Málaga",
             "Madrid",
-            "Antwerp",
-            "Badajoz"
+            "A Coruña",
     };
     private static double[][] CITY_COORDS = new double[][] {
-            { 41.14946, -8.61031 },
-            { 40.63018, -3.16446 },
             { 39.46868, -0.37691 },
             { 41.38561, 2.16873 },
-            { 40.64123, -8.65391 },
-            { 52.3731, 4.89329 },
             { 43.4666, -3.79998 },
             { 37.3879, -6.00198 },
             { 36.7585406, -4.3971722 },
             { 40.42028, -3.70578 },
-            { 51.2222881,4.3909183 },
-            { 38.87176061,-6.971213854 }
+            { 43.3712591, -8.4188010}
     };
 
     public static Map<String, double[]> cityCoords = new HashMap<>();
