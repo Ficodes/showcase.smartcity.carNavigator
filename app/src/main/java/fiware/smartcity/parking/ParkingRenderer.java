@@ -101,7 +101,7 @@ public class ParkingRenderer {
             RenderStyle style = new RenderStyle();
 
             MapMarker mapMarker = new MapMarker(coords, RenderUtilities.createLabeledIcon(ctx,
-                    available, style, R.mipmap.parking));
+                    available, style, R.drawable.parking));
             mapMarker.setOverlayType(MapOverlayType.FOREGROUND_OVERLAY);
 
             map.addMapObject(streetPolygon);
@@ -174,7 +174,8 @@ public class ParkingRenderer {
 
         MapMarker mapMarker = new MapMarker(coords,
                                             RenderUtilities.createLabeledIcon(ctx,
-                                                    label, style, R.mipmap.parking));
+                                                    label, style, R.drawable.parking));
+
         mapMarker.setOverlayType(MapOverlayType.FOREGROUND_OVERLAY);
         map.addMapObject(mapMarker);
 

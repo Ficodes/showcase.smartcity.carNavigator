@@ -20,6 +20,7 @@ import org.joda.time.DateTime;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +37,8 @@ import fiware.smartcity.weather.WindDirection;
  *
  */
 public class Utilities {
+    private static Map<String, Integer> markerMap = null;
+
     public static class AirQualityData {
         public String asString;
         public java.util.Map worstIndex;
@@ -323,5 +326,17 @@ public class Utilities {
         }
 
         return df.format(distance) + " " + unit;
+    }
+
+    public static int getPOIMarker(String category) {
+        // Initilize category markers map if needed
+        if (markerMap == null) {
+            markerMap = new HashMap<>();
+            for(int i = 0; i < Application.POI_CATEGORIES.length; i++) {
+                markerMap.put(Application.POI_CATEGORIES[i], Application.POI_MARKERS[i]);
+            }
+        }
+
+        return markerMap.get(category);
     }
 }

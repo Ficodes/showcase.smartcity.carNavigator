@@ -120,4 +120,12 @@ public class Application {
 
     public static final int LOCATION_PERMISSION = 1;
     public static final int STORAGE_PERMISSION = 2;
+
+    public static String[] POI_CATEGORIES = {
+        "311", "439", "113"
+    };
+
+    public static Integer[] POI_MARKERS = {
+        R.drawable.poi_museum, R.drawable.poi_turism, R.drawable.poi_beach
+    };
 }

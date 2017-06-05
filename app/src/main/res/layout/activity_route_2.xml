@@ -46,7 +46,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/light_blue"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Search Points of Interest"
+                android:text="Search Points of Interest (TurEspaña)"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:layout_marginBottom="@dimen/activity_horizontal_margin" />
@@ -117,7 +117,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Point of Interest"
+                    android:text="Point of Interest (TurEspaña)"
                     android:textColor="@color/light_blue"
                     android:layout_gravity="center_horizontal|left"/>
 
