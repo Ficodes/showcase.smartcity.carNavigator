@@ -172,18 +172,18 @@ public class ParkingRenderer {
 
         RenderStyle style = new RenderStyle();
 
-        MapMarker mapMarker = new MapMarker(coords,
-                                            RenderUtilities.createLabeledIcon(ctx,
-                                                    label, style, R.drawable.parking));
-
-        mapMarker.setOverlayType(MapOverlayType.FOREGROUND_OVERLAY);
-        map.addMapObject(mapMarker);
-
         //Creating a default circle with 10 meters radius
-        MapCircle circle = new MapCircle(10, coords);
+        MapCircle circle = new MapCircle(15, coords);
         circle.setLineColor(Color.parseColor("#FF0000FF")); //(Color.GREEN);
         circle.setFillColor(Color.parseColor("#770000FF"));
         map.addMapObject(circle);
+
+        MapMarker mapMarker = new MapMarker(coords,
+                RenderUtilities.createLabeledIcon(ctx,
+                        label, style, R.drawable.parking));
+
+        mapMarker.setOverlayType(MapOverlayType.FOREGROUND_OVERLAY);
+        map.addMapObject(mapMarker);
 
         Application.mapObjects.add(circle);
         Application.mapObjects.add(mapMarker);

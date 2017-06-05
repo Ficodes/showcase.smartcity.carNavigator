@@ -225,11 +225,11 @@ public class RouteActivity implements LocationListener {
         CheckBox cb = (CheckBox)activity.findViewById(R.id.chkIndoor);
         CheckBox cb2 = (CheckBox)activity.findViewById(R.id.chkOutdoor);
 
-        if(routeData.parkingCategory.contains("StreetParking")) {
+        if(routeData.parkingCategory.contains(Application.STREET_PARKING_TYPE)) {
             cb2.setChecked(true);
         }
 
-        if(routeData.parkingCategory.contains("ParkingLot")) {
+        if(routeData.parkingCategory.contains(Application.PARKING_LOT_TYPE)) {
             cb.setChecked(true);
         }
 
@@ -416,11 +416,11 @@ public class RouteActivity implements LocationListener {
 
         CheckBox cb = (CheckBox)activity.findViewById(R.id.chkIndoor);
         if(cb.isChecked()) {
-            routeData.parkingCategory.add("ParkingLot");
+            routeData.parkingCategory.add(Application.PARKING_LOT_TYPE);
         }
         CheckBox cb2 = (CheckBox)activity.findViewById(R.id.chkOutdoor);
         if(cb2.isChecked()) {
-            routeData.parkingCategory.add("StreetParking");
+            routeData.parkingCategory.add(Application.STREET_PARKING_TYPE);
         }
 
         AutoCompleteTextView vehicle = (AutoCompleteTextView)activity.findViewById(R.id.vehicleInput);

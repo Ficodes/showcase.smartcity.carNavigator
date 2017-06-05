@@ -16,7 +16,7 @@ public class RouteData {
     public Boolean isPoi = null;
     public String destination = "";
     public int parkingDistance = 0;
-    public List<String> parkingCategory = new ArrayList<String>();
+    public List<String> parkingCategory = new ArrayList<>();
     public String vehicle = "";
 
     public GeoCoordinate originCoordinates;
