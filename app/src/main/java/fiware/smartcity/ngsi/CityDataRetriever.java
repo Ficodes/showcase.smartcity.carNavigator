@@ -34,8 +34,6 @@ import fiware.smartcity.weather.WeatherAttributes;
 public class CityDataRetriever extends AsyncTask<CityDataRequest, Integer, Map<String,List<Entity>> > {
     private CityDataListener listener;
 
-    private static String SERVICE_URL = "http://130.206.121.52:7007/v2/entities";
-
     protected Map<String,List<Entity>> doInBackground(CityDataRequest... request) {
         String urlString = createRequestURL(request[0]);
 
@@ -121,48 +119,51 @@ public class CityDataRetriever extends AsyncTask<CityDataRequest, Integer, Map<S
         JSONArray locArray = null;
 
         try {
-            location = obj.getJSONObject("centroid");
+            location = obj.getJSONObject("location");
         }
-        catch(JSONException jse) {
-            try {
-                locValue = obj.getString("centroid");
-            }
-            catch(JSONException jse2) {
-                try {
-                    location = obj.getJSONObject("location");
-                }
-                catch(JSONException jse3) {
-                    try {
-                        locValue = obj.getString("location");
-                    }
-                    catch(JSONException jsex) { }
-
-                    if (locValue != null && locValue.indexOf("[") == 0) {
-                        locValue = null;
-                    }
-                }
-            }
+        catch(JSONException jse3) {
         }
 
         // There could be entities (namely weather entities) without location
         if (location != null) {
-            // Location value can be provided as value or as coordinates
-            if (location.has("value")) {
-                // String coordinates format lat,long
-                locValue = location.getString("value");
+            try {
+                ent.coordinates = location.getJSONArray("coordinates");
 
-            } else if (location.has("coordinates")){
-                // List coordinates format [long, lat]
-                String [] pLoc = location.getString("coordinates").replace("[", "").replace("]", "").split(",");
-                locValue = pLoc[1] + "," + pLoc[0];
+                if (location.getString("type").equals("Point")) {
+                    double latitude = ent.coordinates.getDouble(1);
+                    double longitude = ent.coordinates.getDouble(0);
+                    ent.location = new double[]{latitude, longitude};
+                }
+                else if (location.getString("type").indexOf("Polygon") != -1) {
+                    JSONArray polygons = ent.coordinates;
+                    if (location.getString("type").equals("MultiPolygon")) {
+                        polygons = ent.coordinates.getJSONArray(0);
+                    }
+
+                    List<GeoPolygon> locationPolygon = new ArrayList<GeoPolygon>();
+
+                    int total = polygons.length();
+                    for (int j = 0; j < total; j++) {
+                        JSONArray polygon = polygons.getJSONArray(j);
+                        List<GeoCoordinate> geoPolygon = new ArrayList<GeoCoordinate>();
+                        for (int x = 0; x < polygon.length(); x++) {
+                            double lat = polygon.getJSONArray(x).getDouble(1);
+                            double lon = polygon.getJSONArray(x).getDouble(0);
+                            geoPolygon.add(new GeoCoordinate(lat, lon));
+                        }
+
+                        GeoPolygon newGeoPolygon = new GeoPolygon(geoPolygon);
+                        locationPolygon.add(newGeoPolygon);
+
+                        GeoCoordinate coords = newGeoPolygon.getBoundingBox().getCenter();
+
+                        ent.location = new double[]{coords.getLatitude(), coords.getLongitude()};
+                    }
+
+                    ent.attributes.put("polygon", locationPolygon);
+                }
             }
-        }
-
-        if (locValue != null) {
-            String[] coordinates = locValue.split(",");
-
-            ent.location = new double[]{Double.parseDouble(coordinates[0]),
-                    Double.parseDouble(coordinates[1])};
+            catch(JSONException jse) { }
         }
     }
 
@@ -239,36 +240,6 @@ public class CityDataRetriever extends AsyncTask<CityDataRequest, Integer, Map<S
         getIntegerJSONAttr(ParkingAttributes.TOTAL_SPOTS, obj, ParkingAttributes.TOTAL_SPOTS, attrs);
         getStringJSONAttr("name", obj, "name", attrs);
         getStringJSONAttr("description", obj, "description", attrs);
-
-        if (type.equals(Application.STREET_PARKING_TYPE)) {
-            boolean isArray = true;
-            JSONArray polygons = null;
-
-            List<GeoPolygon> location = new ArrayList<GeoPolygon>();
-            try {
-                polygons = obj.getJSONArray("location").getJSONArray(0);
-            }
-            catch(JSONException jsoe) {
-                isArray = false;
-            }
-            if (isArray == true) {
-                int total = polygons.length();
-                for (int j = 0; j < total; j++) {
-                    JSONArray polygon = polygons.getJSONArray(j);
-                    List<GeoCoordinate> geoPolygon = new ArrayList<GeoCoordinate>();
-                    for (int x = 0; x < polygon.length(); x++) {
-                        double lat = Double.parseDouble(polygon.getJSONArray(x).getString(0));
-                        double lon = Double.parseDouble(polygon.getJSONArray(x).getString(1));
-                        geoPolygon.add(new GeoCoordinate(lat, lon));
-                    }
-                    location.add(new GeoPolygon(geoPolygon));
-                }
-            }
-            else {
-                location.add(getPolygon(obj.getString("location")));
-            }
-            attrs.put("polygon", location);
-        }
     }
 
     private void fillPointOfInterest (JSONObject obj, String type,
@@ -302,7 +273,7 @@ public class CityDataRetriever extends AsyncTask<CityDataRequest, Integer, Map<S
 
         getDoubleJSONAttr(WeatherAttributes.WIND_SPEED, obj, null, attrs);
         getIntegerJSONAttr(WeatherAttributes.WIND_DIRECTION, obj, null, attrs);
-        
+
         getStringJSONAttr(WeatherAttributes.WEATHER_TYPE, obj, null, attrs);
 
         getDoubleJSONAttr(WeatherAttributes.POP, obj, null, attrs);
@@ -390,7 +361,7 @@ public class CityDataRetriever extends AsyncTask<CityDataRequest, Integer, Map<S
             coords = coords.substring(0,coords.length() - 1);
         }
 
-        String out = SERVICE_URL + "?" + "coords=" + coords
+        String out = Application.SERVICE_URL + "?" + "coords=" + coords
                 + geoRelStr + "&type=" + getTypes(req.types) + "&geometry=" + geometry;
 
         if (req.token != null && req.token.length() > 0) {
