@@ -161,10 +161,13 @@ public class Utilities {
             tv.setText((long)windSpeed.doubleValue() + "Km/h");
         }
 
-        String windDirection = WindDirection.get((Integer)data.get(WeatherAttributes.WIND_DIRECTION));
-        if (windDirection != null) {
-            TextView tv = (TextView)v.findViewById(R.id.windDirection);
-            tv.setText(windDirection);
+        Integer intWind = (Integer)data.get(WeatherAttributes.WIND_DIRECTION);
+        if (intWind != null) {
+            String windDirection = WindDirection.get(intWind);
+            if (windDirection != null) {
+                TextView tv = (TextView)v.findViewById(R.id.windDirection);
+                tv.setText(windDirection);
+            }
         }
 
         Double pop = (Double)data.get(WeatherAttributes.POP);
