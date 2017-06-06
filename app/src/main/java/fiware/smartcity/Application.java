@@ -52,6 +52,7 @@ public class Application {
     public static String GAS_STATION_TYPE      = "GasStation";
     public static String GARAGE_TYPE           = "Garage";
     public static String POI_TYPE              = "PointOfInterest";
+    public static String BIKE_HIRE_DOCK_TYPE   = "BikeHireDockingStation";
 
     // It is used to mark any data type to be retrieved
     public static String ANY_ENTITY_TYPE =       "__any__";
@@ -111,7 +112,7 @@ public class Application {
     public static String LAST_DESTINATION = "Last_Destination";
     public static String IS_POI_DESTINATION = "is_poi";
 
-    public static String MARKET_URL = "https://demo-mwc.conwet.com/";
+    public static String MARKET_URL = "http://130.206.122.159:8004/";
 
     public static String BF_TOKEN = "bf_token";
     public static String BF_USER  = "bf_user";

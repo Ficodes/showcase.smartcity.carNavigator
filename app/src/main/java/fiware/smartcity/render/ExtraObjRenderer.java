@@ -58,6 +58,16 @@ public class ExtraObjRenderer {
             }
         }
 
+        List<Entity> bikes = entities.get(Application.BIKE_HIRE_DOCK_TYPE);
+        if (bikes != null) {
+            for (Entity bike : bikes) {
+                if (Application.renderedEntities.get(bike.id) != null) {
+                    continue;
+                }
+                renderBikeHireDock(ctx, map, bike);
+            }
+        }
+
         List<Entity> parkingRestrictions = entities.get(Application.PARKING_RESTRICTION_TYPE);
         if (parkingRestrictions != null) {
             for (Entity parkingRestriction : parkingRestrictions) {
@@ -69,7 +79,11 @@ public class ExtraObjRenderer {
         }
     }
 
-    private static void renderPoint(Context ctx, Map map, Entity ent, int icon) {
+    private static void renderPointName(Context ctx, Map map, Entity ent, int icon) {
+        renderPoint(ctx, map, ent, icon, (String) ent.attributes.get("name"));
+    }
+
+    private static void renderPoint(Context ctx, Map map, Entity ent, int icon, String name) {
         GeoCoordinate coords = new GeoCoordinate(ent.location[0], ent.location[1]);
 
         RenderStyle style = new RenderStyle();
@@ -78,7 +92,7 @@ public class ExtraObjRenderer {
 
         MapMarker mapMarker = new MapMarker(coords,
                 RenderUtilities.createLabeledIcon(ctx,
-                        (String) ent.attributes.get("name"), style,
+                        name, style,
                         icon
                         ));
 
@@ -91,18 +105,23 @@ public class ExtraObjRenderer {
     }
 
     private static void renderGasStation(Context ctx, Map map, Entity ent) {
-        renderPoint(ctx, map, ent, R.drawable.gas_station);
+        renderPointName(ctx, map, ent, R.drawable.gas_station);
     }
 
     private  static void renderGarage(Context ctx, Map map, Entity ent) {
-        renderPoint(ctx, map, ent, R.drawable.car_repair);
+        renderPointName(ctx, map, ent, R.drawable.car_repair);
     }
 
     private  static void renderPoi(Context ctx, Map map, Entity ent) {
         String category = ((List<String>) ent.attributes.get("category")).get(0);
         int icon = Utilities.getPOIMarker(category);
-        renderPoint(ctx, map, ent, icon);
+        renderPointName(ctx, map, ent, icon);
 
+    }
+
+    public static void renderBikeHireDock(Context ctx, Map map, Entity ent) {
+        String name = (Integer) ent.attributes.get("freeSlotNumber") + " / " + (Integer) ent.attributes.get("availableBikeNumber");
+        renderPoint(ctx, map, ent, R.drawable.bike, name);
     }
 
     public static void renderParkingRestriction(Context ctx, Map map, Entity ent) {
