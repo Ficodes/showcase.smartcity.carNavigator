@@ -37,7 +37,9 @@ import fiware.smartcity.weather.WindDirection;
  *
  */
 public class Utilities {
+    private static Map<String, Integer> issueMap = null;
     private static Map<String, Integer> markerMap = null;
+    private static Map<String, String> categoriesMap = null;
 
     public static class AirQualityData {
         public String asString;
@@ -331,15 +333,34 @@ public class Utilities {
         return df.format(distance) + " " + unit;
     }
 
-    public static int getPOIMarker(String category) {
-        // Initilize category markers map if needed
-        if (markerMap == null) {
-            markerMap = new HashMap<>();
-            for(int i = 0; i < Application.POI_CATEGORIES.length; i++) {
-                markerMap.put(Application.POI_CATEGORIES[i], Application.POI_MARKERS[i]);
+    private static Map<String, Integer> initializeMap (Map<String, Integer> map, String[] categories, Integer[] markers) {
+        if (map == null) {
+            map = new HashMap<>();
+            for(int i = 0; i < categories.length; i++) {
+                map.put(categories[i], markers[i]);
             }
         }
+        return map;
+    }
 
+    public static int getIssueMarker(String category) {
+        issueMap = initializeMap(issueMap, Application.ISSUE_CATEGORIES, Application.ISSUE_MARKERS);
+        return issueMap.get(category);
+    }
+
+    public static int getPOIMarker(String category) {
+        // Initilize category markers map if needed
+        markerMap = initializeMap(markerMap, Application.POI_CATEGORIES, Application.POI_MARKERS);
         return markerMap.get(category);
+    }
+
+    public static String getCategoryDisplay(String category) {
+        if (categoriesMap == null) {
+            categoriesMap = new HashMap<>();
+            for(int i = 0; i < Application.ISSUE_CATEGORIES.length; i++) {
+                categoriesMap.put(Application.ISSUE_CATEGORIES[i], Application.ISSUE_CATEGORIES_DISPLAY[i]);
+            }
+        }
+        return categoriesMap.get(category);
     }
 }

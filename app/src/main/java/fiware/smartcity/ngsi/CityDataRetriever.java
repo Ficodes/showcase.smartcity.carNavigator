@@ -203,12 +203,25 @@ public class CityDataRetriever extends AsyncTask<CityDataRequest, Integer, Map<S
         }
         else if (type.equals(Application.BIKE_HIRE_DOCK_TYPE)) {
             fillBikeHireDock(obj, type, attrs);
+        } else if (type.equals(Application.TRAFFIC_CAMERA_TYPE)) {
+            fillTrafficCamera(obj, type, attrs);
+        } else if (type.equals(Application.TRAFFIC_ISSUE_TYPE)) {
+            fillCityIssue(obj, type, attrs);
         }
+    }
+
+    private void fillCityIssue(JSONObject obj, String type, Map<String, Object> attrs) throws Exception {
+        getStringJSONAttr("description", obj, "description", attrs);
+        getStringListJSONAttr("category", obj, null, attrs);
+    }
+
+    private void fillTrafficCamera(JSONObject obj, String type, Map<String, Object> attrs) throws Exception {
+        getStringJSONAttr("name", obj, "name", attrs);
     }
 
     private void fillBikeHireDock(JSONObject obj, String type, Map<String, Object> attrs) throws Exception {
         getIntegerJSONAttr("availableBikeNumber", obj, "availableBikeNumber", attrs);
-        getIntegerJSONAttr("freeSlotNumber", obj, "freeSlotNumber", attrs);
+        getIntegerJSONAttr("totalSlotNumber", obj, "totalSlotNumber", attrs);
     }
 
     private void fillAmbientObserved(JSONObject obj, String type, Map<String, Object> attrs) throws Exception {

@@ -13,7 +13,7 @@ import java.util.Map;
  *
  */
 public class Application {
-    public static String SERVICE_URL = "http://130.206.121.52:7007/v2/entities";
+    public static String SERVICE_URL = "http://192.168.1.57:7007/v2/entities";
 
     public static MainActivity mainActivity = null;
 
@@ -23,7 +23,7 @@ public class Application {
     // Parking mode is on from 700 ms far away from destination
     public static int PARKING_DISTANCE = 700;
 
-    public static List<MapObject> mapObjects = new ArrayList<MapObject>();
+    public static List<MapObject> mapObjects = new ArrayList<>();
 
     public static Map<String, String> renderedEntities = new HashMap<>();
 
@@ -53,6 +53,8 @@ public class Application {
     public static String GARAGE_TYPE           = "Garage";
     public static String POI_TYPE              = "PointOfInterest";
     public static String BIKE_HIRE_DOCK_TYPE   = "BikeHireDockingStation";
+    public static String TRAFFIC_CAMERA_TYPE   = "TrafficCamera";
+    public static String TRAFFIC_ISSUE_TYPE    = "CityIssue";
 
     // It is used to mark any data type to be retrieved
     public static String ANY_ENTITY_TYPE =       "__any__";
@@ -128,5 +130,17 @@ public class Application {
 
     public static Integer[] POI_MARKERS = {
         R.drawable.poi_museum, R.drawable.poi_turism, R.drawable.poi_beach
+    };
+
+    public static String[] ISSUE_CATEGORIES = {
+        "accident", "construction", "longTermConstruction", "laneCut", "leisureEvent", "protest"
+    };
+
+    public static String[] ISSUE_CATEGORIES_DISPLAY = {
+            "Accident", "Construction", "Long Term Construction", "Lane Cut", "Leisure Event", "Protest"
+    };
+
+    public static Integer[] ISSUE_MARKERS = {
+        R.drawable.issue_accident, R.drawable.issue_const, R.drawable.issue_long_const, R.drawable.issue_cut, R.drawable.issue_leisure, R.drawable.issue_protest
     };
 }

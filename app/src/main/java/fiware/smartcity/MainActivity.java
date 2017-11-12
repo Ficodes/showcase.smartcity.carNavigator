@@ -300,7 +300,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             @Override
             public void onEngineInitializationCompleted(OnEngineInitListener.Error error) {
                 if (error == OnEngineInitListener.Error.NONE) {
-                    Log.d(Application.TAG, "Version: " + Version.SDK_API_INT);
+                    Log.d(Application.TAG, "Version: " + Version.getSdkVersion());
                     mapFragment.getMapGesture().addOnGestureListener(gestureListener);
 
                     // retrieve a reference of the map from the map fragment
@@ -1267,10 +1267,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                         || previousDistance == 0)) && !pendingSmartCityRequest) {
             previousDistance = currentDistance;
 
+            // Smart City Data Query
             List<String> types = Arrays.asList(
                     Application.PARKING_TYPE,
                     Application.AMBIENT_OBSERVED_TYPE,
+                    Application.BIKE_HIRE_DOCK_TYPE,
                     Application.POI_TYPE,
+                    Application.TRAFFIC_CAMERA_TYPE,
+                    Application.TRAFFIC_ISSUE_TYPE,
                     Application.ANY_ENTITY_TYPE
             );
             executeDataRequest(types, Application.DEFAULT_RADIUS, loc);

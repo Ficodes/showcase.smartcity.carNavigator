@@ -8,7 +8,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -30,15 +29,16 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.here.android.mpa.common.GeoCoordinate;
 import com.here.android.mpa.common.GeoPosition;
-import com.here.android.mpa.routing.RouteManager;
+import com.here.android.mpa.routing.CoreRouter;
 import com.here.android.mpa.routing.RouteOptions;
 import com.here.android.mpa.routing.RoutePlan;
 import com.here.android.mpa.routing.RouteResult;
+import com.here.android.mpa.routing.RouteWaypoint;
+import com.here.android.mpa.routing.RoutingError;
 import com.here.android.mpa.search.DiscoveryResult;
 import com.here.android.mpa.search.DiscoveryResultPage;
 import com.here.android.mpa.search.ErrorCode;
@@ -475,41 +475,34 @@ public class RouteActivity implements LocationListener {
 
     private void doCalculateRoute(GeoCoordinate start, GeoCoordinate end) {
         // Initialize RouteManager
-        RouteManager routeManager = new RouteManager();
+        CoreRouter routeManager = new CoreRouter();
 
         // 3. Select routing options via RoutingMode
         RoutePlan routePlan = new RoutePlan();
+        routePlan.addWaypoint(new RouteWaypoint(start));
+        routePlan.addWaypoint(new RouteWaypoint(end));
+
         RouteOptions routeOptions = new RouteOptions();
         routeOptions.setTransportMode(RouteOptions.TransportMode.CAR);
         routeOptions.setRouteType(RouteOptions.Type.FASTEST);
+
         routePlan.setRouteOptions(routeOptions);
 
-        routePlan.addWaypoint(start);
-        routePlan.addWaypoint(end);
-
         // Retrieve Routing information via RouteManagerListener
-        RouteManager.Error error =
-                routeManager.calculateRoute(routePlan, new RouteManager.Listener() {
-                    @Override
-                    public void onCalculateRouteFinished(RouteManager.Error errorCode, List<RouteResult> result) {
-                        if (errorCode == RouteManager.Error.NONE && result.get(0).getRoute() != null) {
-                            routeData.route = result.get(0).getRoute();
-                            progress.dismiss();
-                            ((MainActivity)activity).onRouteReady(routeData);
-                        }
-                        else {
-                            Alert.show(activity.getApplicationContext(), "Error while obtaining route");
-                        }
-                    }
-
-                    public void onProgress(int progress) {
-
-                    }
-                });
-
-        if (error != RouteManager.Error.NONE) {
-            Log.e("FIWARE-HERE", "Error while obtaining route: " + error);
-        }
+        routeManager.calculateRoute(routePlan, new CoreRouter.Listener() {
+            @Override
+            public void onCalculateRouteFinished(List<RouteResult> result, RoutingError error) {
+                if (error == RoutingError.NONE && result.get(0).getRoute() != null) {
+                    routeData.route = result.get(0).getRoute();
+                    progress.dismiss();
+                    ((MainActivity)activity).onRouteReady(routeData);
+                } else {
+                    Alert.show(activity.getApplicationContext(), "Error while obtaining route");
+                }
+            }
+            public void onProgress(int progress) {
+            }
+        });
     }
 
     private Handler UIHandler = new Handler(Looper.getMainLooper()) {

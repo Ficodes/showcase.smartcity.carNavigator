@@ -2,10 +2,12 @@ package fiware.smartcity.parking;
 
 import android.os.AsyncTask;
 
-import com.here.android.mpa.routing.RouteManager;
+import com.here.android.mpa.routing.CoreRouter;
 import com.here.android.mpa.routing.RouteOptions;
 import com.here.android.mpa.routing.RoutePlan;
 import com.here.android.mpa.routing.RouteResult;
+import com.here.android.mpa.routing.RouteWaypoint;
+import com.here.android.mpa.routing.RoutingError;
 
 import java.util.List;
 
@@ -17,7 +19,7 @@ public class ParkingRouteCalculator extends AsyncTask<ParkingRouteData, Integer,
 
     protected  Integer doInBackground(ParkingRouteData... request) {
         // Initialize RouteManager
-        RouteManager routeManager = new RouteManager();
+        CoreRouter routeManager = new CoreRouter();
 
         // 3. Select routing options via RoutingMode
         RoutePlan routePlan = new RoutePlan();
@@ -26,27 +28,23 @@ public class ParkingRouteCalculator extends AsyncTask<ParkingRouteData, Integer,
         routeOptions.setRouteType(RouteOptions.Type.FASTEST);
         routePlan.setRouteOptions(routeOptions);
 
-        routePlan.addWaypoint(request[0].origin);
-        routePlan.addWaypoint(request[0].parkingDestination);
+        routePlan.addWaypoint(new RouteWaypoint(request[0].origin));
+        routePlan.addWaypoint(new RouteWaypoint(request[0].parkingDestination));
 
         // Retrieve Routing information via RouteManagerListener
-        RouteManager.Error error =
-                routeManager.calculateRoute(routePlan, new RouteManager.Listener() {
-                    @Override
-                    public void onCalculateRouteFinished(RouteManager.Error errorCode,
-                                                         List<RouteResult> result) {
-                        if (errorCode == RouteManager.Error.NONE &&
-                                result.get(0).getRoute() != null) {
-                            listener.onRouteReady(result.get(0).getRoute());
-                        }
-                    }
+        routeManager.calculateRoute(routePlan, new CoreRouter.Listener() {
+            @Override
+            public void onCalculateRouteFinished(List<RouteResult> result, RoutingError error) {
+                if (error == RoutingError.NONE && result.get(0).getRoute() != null) {
+                    listener.onRouteReady(result.get(0).getRoute());
+                }
+            }
 
-                    public void onProgress(int progress) {
+            public void onProgress(int progress) {
+            }
+        });
 
-                    }
-                });
-
-        return new Integer(0);
+        return Integer.valueOf(0);
     }
 
     public void setListener(RouteCalculationListener list) {

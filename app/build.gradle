@@ -6,12 +6,12 @@ android {
             keyAlias 'key1'
         }
     }
-    compileSdkVersion 23
-    buildToolsVersion '25.0.0'
+    compileSdkVersion 27
+    buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId 'fiware.smartcity'
         minSdkVersion 22
-        targetSdkVersion 23
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
     }
@@ -23,22 +23,32 @@ android {
     }
     productFlavors {
     }
+//    splits {
+//        abi {
+//            enable true
+//            reset()
+//            include 'armeabi-v7a'
+//            universalApk false
+//        }
+//    }
 }
 
 repositories {
     flatDir {
         dirs 'libs'
     }
+    google()
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     compile(name: 'HERE-sdk', ext: 'aar')
+    //compile files('libs/HERE-sdk.aar@aar')
     compile files('libs/HERE-sdk-javadoc.jar')
-    compile 'com.android.support:appcompat-v7:23.1.0'
-    compile 'com.android.support:design:23.1.0'
-    compile 'com.android.support:support-v4:23.1.0'
+    compile 'com.android.support:appcompat-v7:27.0.0'
+    compile 'com.android.support:design:27.0.0'
+    compile 'com.android.support:support-v4:27.0.0'
     compile 'joda-time:joda-time:2.8.2'
     compile 'com.google.code.gson:gson:2.8.0'
 }
