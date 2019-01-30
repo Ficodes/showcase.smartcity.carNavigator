@@ -1274,8 +1274,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                     Application.BIKE_HIRE_DOCK_TYPE,
                     Application.POI_TYPE,
                     Application.TRAFFIC_CAMERA_TYPE,
-                    Application.TRAFFIC_ISSUE_TYPE,
-                    Application.ANY_ENTITY_TYPE
+                    Application.TRAFFIC_ISSUE_TYPE
+                    //Application.WEATHER_FORECAST_TYPE,
             );
             executeDataRequest(types, Application.DEFAULT_RADIUS, loc);
         }
@@ -1377,7 +1377,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                     else {
                         text = "Route transfer error";
                     }
-                    Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
                 }
             };
 

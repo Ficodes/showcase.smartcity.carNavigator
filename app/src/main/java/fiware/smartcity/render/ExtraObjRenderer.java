@@ -134,6 +134,10 @@ public class ExtraObjRenderer {
             name += "...";
         }
 
+        if (name.length() == 0) {
+            name = category;
+        }
+
         renderPoint(ctx, map, ent, icon, name);
     }
 }

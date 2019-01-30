@@ -13,7 +13,7 @@ import java.util.Map;
  *
  */
 public class Application {
-    public static String SERVICE_URL = "http://192.168.1.57:7007/v2/entities";
+    public static String SERVICE_URL = "http://databiz.opplafy.eu:7007/v2/entities";
 
     public static MainActivity mainActivity = null;
 
@@ -114,7 +114,7 @@ public class Application {
     public static String LAST_DESTINATION = "Last_Destination";
     public static String IS_POI_DESTINATION = "is_poi";
 
-    public static String MARKET_URL = "http://130.206.122.159:8004/";
+    public static String MARKET_URL = "https://databiz.opplafy.eu/";
 
     public static String BF_TOKEN = "bf_token";
     public static String BF_USER  = "bf_user";

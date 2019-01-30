@@ -345,7 +345,11 @@ public class Utilities {
 
     public static int getIssueMarker(String category) {
         issueMap = initializeMap(issueMap, Application.ISSUE_CATEGORIES, Application.ISSUE_MARKERS);
-        return issueMap.get(category);
+        Integer marker = issueMap.get(category);
+        if (marker == null) {
+            marker = R.drawable.issue_leisure;
+        }
+        return marker;
     }
 
     public static int getPOIMarker(String category) {

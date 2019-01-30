@@ -30,24 +30,24 @@
 
         <service
             android:name="com.here.android.mpa.service.MapService"
-            android:exported="true"
             android:label="HereMapService"
-            android:process="global.Here.Map.Service.v2" >
+            android:process="global.Here.Map.Service.v3"
+            android:exported="true" >
             <intent-filter>
-                <action android:name="com.here.android.mpa.service.MapService" >
+                <action android:name="com.here.android.mpa.service.MapService.v3" >
                 </action>
             </intent-filter>
         </service>
 
         <meta-data
             android:name="com.here.android.maps.appid"
-            android:value="xdfK7BBZDOz60qh1XpiN" />
+            android:value="ICkCdxmRRWKr21qh89TF" />
         <meta-data
             android:name="com.here.android.maps.apptoken"
-            android:value="jGniJM1HkWmD8m4wsXkHuw" />
+            android:value="CwrT28aa2zBSae-aWJUNeg" />
         <meta-data
             android:name="com.here.android.maps.license.key"
-            android:value="GbnRRmPj3R7sUDUIIJr53zjeU3G0kx9Fub5tO2wgTMVG7y/FYtl6jOlcypNK+5CkGE91DxUhek8ckkqW58TyExSrq8pYzfceqfip/fdTVePvdQSQrqgV35eyT/S8ZP04MLkqkaVzmAR1Q2C8PYkLwzQ2HOayTVVl9077Fg3vgFeAt8oVPaT9z9wTGhltjfp2OevOBsfNtz4wbZ7NCF3qyCkpRtD20KXtuLUZinFCZdDMpQwzwRiEplOqbkKB0/XI+l6FDPItUROAT6+IILHC2QQrJPVbv1+31elCqU67FUYcqAEWC/0LozljjeVeKDam4oVAe823Vhsn3GjiMBwKDCoHiQkvA8a0QDHns5ei1IIfwRQhrcNFEKEvQGUu0jyMLUo3rTnTvgcaXOJPnQuR4p64toL407vv6NA0qXmds7UPk2MyZ2mAm1XOqjgc2CozjBrQcdNjzM4ytMPoZWRAt5qCtGww5WRsTbBxiKfuJH1+Ocq+g4RY8yBPQtt8aAUtUHr9jtolbeUepxc50wkJRNLo4o0yWDBKkpZZHMzCVuzu97k0o5hUL+B8pOONF8uj6Rp00ADUnsu1gsbZDyOlpxDYfvf8zH6wSdRwuuWKMfzwhSVaUUv67fPN98o6sCcr8j8InQM4y7mfz2zfVAOzY3cCpYV+tF7TpnMpcR1KrsA=" />
+            android:value="S8p49+d56uccEOz5TfeMEp/0EWBTmPAp08NtqvGzzuuJNfmrE9gYmuT8TRzOWxUzmCohKdiAp18kgZTZ4eL/9WOhuARCnbBvBIS9kf8njy9OvHlQylHibQiih1ckwl2SZmJUQHhy70oPAROSCCPNqjHIXYXZDvqFtwcSOpMc2FwFCRJOOAEbp/f106yMf/R77g/NnsRCy6508OUQNmpbVh9uRv1Xoc/YOP/rUGcK0hGZ8HCWr1fee6/q8lkyWeqc72Q3zDdHEFkZdAx54E6etBwWrtIK6xSxVNIjfHdLhjs0JclAke63+nTKH9gfe0Eofcf71EUPXuvjqfGUUCgtiViUIS0wMSTAHee8AP7pv+hSKeGz7gCGf5/fzoJKnGv6Q7PzWnaqsOPDQwsfJn0F9yr++XMCQH700Ys0LcZUNlunR5ifibN5iSARyfxl5uuiDQEP1KiGO19oy6v2Ej/TU3Os0DJQfncpENp+JclmIshMZ+Z3fZPMpDikd+NX631cVzKJbn7uGoBPANhs8SAjcONoSDG4OuRAySNlBpFQBiEcufnOpivwPkEkzaFd4Jbh5/6EPIVb+E5JGfsh0T78Z0m+EfMsBqa0KRv66mkSxp1SXdpZW1y8Ght2hOkdWPYhTnqAvqMF1NOj4HYMcCVaLrchtsbZHxLDymVB8LUD+rA=" />
     </application>
 
 </manifest>
