@@ -8,6 +8,7 @@ import android.util.Log;
 import com.here.android.mpa.common.GeoCoordinate;
 import com.here.android.mpa.common.GeoPolygon;
 
+import com.here.android.mpa.common.GeoPolyline;
 import com.here.android.mpa.common.Image;
 import com.here.android.mpa.mapping.Map;
 import com.here.android.mpa.mapping.MapCircle;
@@ -16,6 +17,7 @@ import com.here.android.mpa.mapping.MapMarker;
 
 import com.here.android.mpa.mapping.MapOverlayType;
 import com.here.android.mpa.mapping.MapPolygon;
+import com.here.android.mpa.mapping.MapPolyline;
 
 import java.io.IOException;
 import java.util.List;
@@ -85,29 +87,49 @@ public class ParkingRenderer {
             return;
         }
 
-        String total = ent.attributes.get(ParkingAttributes.TOTAL_SPOTS).toString();
-
         List<GeoPolygon> polygons = (List<GeoPolygon>)ent.attributes.get("polygon");
-        for(int j = 0; j < polygons.size(); j++) {
-            GeoPolygon polygon = polygons.get(j);
+        if (polygons != null) {
+            for(int j = 0; j < polygons.size(); j++) {
+                GeoPolygon polygon = polygons.get(j);
 
-            GeoCoordinate coords = polygon.getBoundingBox().getCenter();
+                GeoCoordinate coords = polygon.getBoundingBox().getCenter();
 
-            MapPolygon streetPolygon = new MapPolygon(polygon);
-            streetPolygon.setLineColor(Color.parseColor("#FF0000FF"));
-            streetPolygon.setFillColor(Color.parseColor("#770000FF"));
+                MapPolygon streetPolygon = new MapPolygon(polygon);
+                streetPolygon.setLineColor(Color.parseColor("#FF0000FF"));
+                streetPolygon.setFillColor(Color.parseColor("#770000FF"));
 
+
+                RenderStyle style = new RenderStyle();
+
+                MapMarker mapMarker = new MapMarker(coords, RenderUtilities.createLabeledIcon(ctx,
+                        available, style, R.mipmap.parking));
+                mapMarker.setOverlayType(MapOverlayType.FOREGROUND_OVERLAY);
+
+                map.addMapObject(streetPolygon);
+                map.addMapObject(mapMarker);
+
+                Application.mapObjects.add(streetPolygon);
+                Application.mapObjects.add(mapMarker);
+            }
+        }
+
+        GeoPolyline line = (GeoPolyline) ent.attributes.get("linestring");
+        if (line != null) {
+            GeoCoordinate coords = line.getBoundingBox().getCenter();
+
+            MapPolyline mapLine = new MapPolyline(line);
+            mapLine.setLineWidth(10);
 
             RenderStyle style = new RenderStyle();
-
             MapMarker mapMarker = new MapMarker(coords, RenderUtilities.createLabeledIcon(ctx,
                     available, style, R.mipmap.parking));
+
             mapMarker.setOverlayType(MapOverlayType.FOREGROUND_OVERLAY);
 
-            map.addMapObject(streetPolygon);
+            map.addMapObject(mapLine);
             map.addMapObject(mapMarker);
 
-            Application.mapObjects.add(streetPolygon);
+            Application.mapObjects.add(mapLine);
             Application.mapObjects.add(mapMarker);
         }
     }

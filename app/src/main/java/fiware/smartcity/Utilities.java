@@ -355,7 +355,11 @@ public class Utilities {
     public static int getPOIMarker(String category) {
         // Initilize category markers map if needed
         markerMap = initializeMap(markerMap, Application.POI_CATEGORIES, Application.POI_MARKERS);
-        return markerMap.get(category);
+        Integer catMarker = markerMap.get(category);
+        if (catMarker == null) {
+            catMarker = R.drawable.poi_turism;
+        }
+        return catMarker;
     }
 
     public static String getCategoryDisplay(String category) {

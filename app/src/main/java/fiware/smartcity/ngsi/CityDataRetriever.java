@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.here.android.mpa.common.GeoCoordinate;
 import com.here.android.mpa.common.GeoPolygon;
+import com.here.android.mpa.common.GeoPolyline;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -161,6 +162,21 @@ public class CityDataRetriever extends AsyncTask<CityDataRequest, Integer, Map<S
                     }
 
                     ent.attributes.put("polygon", locationPolygon);
+                } else if (location.getString("type").indexOf("LineString") != -1) {
+                    JSONArray points = ent.coordinates;
+
+                    List<GeoCoordinate> coordLines = new ArrayList<>();
+
+                    for (int i = 0; i < points.length(); i++) {
+                        double lat = points.getJSONArray(i).getDouble(1);
+                        double lon = points.getJSONArray(i).getDouble(0);
+                        coordLines.add(new GeoCoordinate(lat, lon));
+                    }
+                    GeoPolyline line = new GeoPolyline(coordLines);
+
+                    GeoCoordinate center = line.getBoundingBox().getCenter();
+                    ent.location = new double[]{center.getLatitude(), center.getLongitude()};
+                    ent.attributes.put("linestring", line);
                 }
             }
             catch(JSONException jse) { }
