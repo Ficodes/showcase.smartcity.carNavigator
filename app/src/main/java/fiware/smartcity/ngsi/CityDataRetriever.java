@@ -228,7 +228,7 @@ public class CityDataRetriever extends AsyncTask<CityDataRequest, Integer, Map<S
 
     private void fillCityIssue(JSONObject obj, String type, Map<String, Object> attrs) throws Exception {
         getStringJSONAttr("description", obj, "description", attrs);
-        getStringListJSONAttr("category", obj, null, attrs);
+        getStringJSONAttr("subCategory", obj, null, attrs);
     }
 
     private void fillTrafficCamera(JSONObject obj, String type, Map<String, Object> attrs) throws Exception {

@@ -309,6 +309,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                     String city =
                             getPreferences(MODE_WORLD_READABLE).getString(
                                     Application.LAST_CITY_VISITED, "Santander");
+
                     double[] coords = RouteActivity.cityCoords.get(city);
                     DEFAULT_COORDS = new GeoCoordinate(coords[0], coords[1]);
 
@@ -548,6 +549,23 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
         @Override
         public boolean onPinchZoomEvent(float v, PointF pointF) {
+            Double zoomLevel = map.getZoomLevel();
+            if (zoomLevel > 15.0 && !pendingSmartCityRequest) {
+                // Execute an smart city data request in order to populate the displayed map
+                GeoPosition loc = new GeoPosition(map.getCenter());
+
+                List<String> types = Arrays.asList(
+                        Application.PARKING_TYPE,
+                        Application.AMBIENT_OBSERVED_TYPE,
+                        Application.BIKE_HIRE_DOCK_TYPE,
+                        Application.POI_TYPE,
+                        Application.TRAFFIC_CAMERA_TYPE,
+                        Application.TRAFFIC_ISSUE_TYPE
+                        //Application.WEATHER_FORECAST_TYPE,
+                );
+
+                executeDataRequest(types, Application.DEFAULT_VIEW_RADIUS, loc);
+            }
             return false;
         }
 

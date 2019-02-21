@@ -13,12 +13,13 @@ import java.util.Map;
  *
  */
 public class Application {
-    public static String SERVICE_URL = "http://databiz.opplafy.eu:7007/v2/entities";
+    public static String SERVICE_URL = "http://192.168.2.166:7007/v2/entities";
 
     public static MainActivity mainActivity = null;
 
     public static int THRESHOLD_DISTANCE = 4000;
     public static int DEFAULT_RADIUS = 400;
+    public static int DEFAULT_VIEW_RADIUS = 2000;
 
     // Parking mode is on from 700 ms far away from destination
     public static int PARKING_DISTANCE = 700;
@@ -54,7 +55,7 @@ public class Application {
     public static String POI_TYPE              = "PointOfInterest";
     public static String BIKE_HIRE_DOCK_TYPE   = "BikeHireDockingStation";
     public static String TRAFFIC_CAMERA_TYPE   = "TrafficCamera";
-    public static String TRAFFIC_ISSUE_TYPE    = "CityIssue";
+    public static String TRAFFIC_ISSUE_TYPE    = "Alert";
 
     // It is used to mark any data type to be retrieved
     public static String ANY_ENTITY_TYPE =       "__any__";
@@ -114,7 +115,7 @@ public class Application {
     public static String LAST_DESTINATION = "Last_Destination";
     public static String IS_POI_DESTINATION = "is_poi";
 
-    public static String MARKET_URL = "https://databiz.opplafy.eu/";
+    public static String MARKET_URL = "https://market.opplafy.eu/";
 
     public static String BF_TOKEN = "bf_token";
     public static String BF_USER  = "bf_user";
@@ -133,14 +134,14 @@ public class Application {
     };
 
     public static String[] ISSUE_CATEGORIES = {
-        "accident", "construction", "longTermConstruction", "laneCut", "leisureEvent", "protest"
+        "carAccident", "roadWorks", "longTermRoadWorks", "laneCut", "leisureEvent", "protest", "roadClosed", "trafficLightOff"
     };
 
     public static String[] ISSUE_CATEGORIES_DISPLAY = {
-            "Accident", "Construction", "Long Term Construction", "Lane Cut", "Leisure Event", "Protest"
+            "Accident", "Road Works", "Long Term Road Works", "Lane Cut", "Leisure Event", "Protest", "Road Closed", "Traffic Light Off"
     };
 
     public static Integer[] ISSUE_MARKERS = {
-        R.drawable.issue_accident, R.drawable.issue_const, R.drawable.issue_long_const, R.drawable.issue_cut, R.drawable.issue_leisure, R.drawable.issue_protest
+        R.drawable.issue_accident, R.drawable.issue_const, R.drawable.issue_long_const, R.drawable.issue_cut, R.drawable.issue_leisure, R.drawable.issue_protest, R.drawable.issue_cut, R.drawable.issue_const
     };
 }

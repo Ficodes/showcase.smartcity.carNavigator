@@ -119,12 +119,11 @@ public class ExtraObjRenderer {
     }
 
     private static void renderTrafficIssue(Context ctx, Map map, Entity ent) {
-        String category = "leisureEvent"; // Default one
-        List<String> categories = (List<String>) ent.attributes.get("category");
+        String category = (String) ent.attributes.get("subCategory");
 
-        if (categories.size() > 0) {
+        /*if (categories.size() > 0) {
             category = categories.contains("accident") ? "accident" : categories.get(0);
-        }
+        }*/
 
         int icon = Utilities.getIssueMarker(category);
         String name = (String) ent.attributes.get("description");
