@@ -85,6 +85,7 @@ public class RenderUtilities {
         Image out = new Image();
 
         try {
+            // Set the width of the icon to an specific size
             Bitmap iconBitmap = BitmapFactory.decodeResource(ctx.getResources(), drawable);
             Paint paint = createPaint(ctx, style.textSize, style.textColor, style.textStyle);
 

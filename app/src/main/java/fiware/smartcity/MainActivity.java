@@ -1,7 +1,9 @@
 package fiware.smartcity;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -301,13 +303,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             public void onEngineInitializationCompleted(OnEngineInitListener.Error error) {
                 if (error == OnEngineInitListener.Error.NONE) {
                     Log.d(Application.TAG, "Version: " + Version.getSdkVersion());
-                    mapFragment.getMapGesture().addOnGestureListener(gestureListener);
+                    mapFragment.getMapGesture().addOnGestureListener(gestureListener, 1, false);
 
                     // retrieve a reference of the map from the map fragment
                     map = mapFragment.getMap();
                     // Oporto downtown
                     String city =
-                            getPreferences(MODE_WORLD_READABLE).getString(
+                            getPreferences(MODE_PRIVATE).getString(
                                     Application.LAST_CITY_VISITED, "Santander");
 
                     double[] coords = RouteActivity.cityCoords.get(city);
@@ -458,7 +460,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
         if(underSimulation) {
             if(navMan != null) {
-                navMan.setVoiceSkin(voiceSkin);
+                navMan.getVoiceGuidanceOptions().setVoiceSkin(voiceSkin);
             }
         }
     }
@@ -566,6 +568,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
                 executeDataRequest(types, Application.DEFAULT_VIEW_RADIUS, loc);
             }
+
+            if (zoomLevel < 13.0) {
+                // When zooming out the pois are removed
+                map.removeMapObjects(mapObjects);
+                mapObjects.clear();
+            }
+
             return false;
         }
 
@@ -981,6 +990,21 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 RelativeLayout.LayoutParams.MATCH_PARENT, 100));
     }
 
+    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            switch (which){
+                case DialogInterface.BUTTON_POSITIVE:
+                    //Yes button clicked
+                    break;
+
+                case DialogInterface.BUTTON_NEGATIVE:
+                    //No button clicked
+                    break;
+            }
+        }
+    };
+
     private void handleParkingMode(final GeoCoordinate coord, final long distance) {
         if (!parkingFound && !pendingParkingRequest
                 && parkingRadius < Application.MAX_PARKING_DISTANCE) {
@@ -1161,8 +1185,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                         ParkingRenderer.announceParking(tts, parkingName);
                         routeData.parkingAddress = parkingName;
                         showParkingData(parkingName);
+
+                        // Ask for booking if the parking allow to do so
+                        if (targetParking.attributes.containsKey("bookServiceAvailable") && (Boolean) targetParking.attributes.get("bookServiceAvailable")) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                            builder.setMessage("The parking " + parkingName + " can be booked. Do you want to book a parking lot?").setPositiveButton("Yes", dialogClickListener)
+                                    .setNegativeButton("No", dialogClickListener).show();
+                        }
                     }
 
+                    // I AM HERE
                     routeData.parkingCoordinates = new GeoCoordinate(targetParking.location[0],
                             targetParking.location[1]);
 
@@ -1474,17 +1506,17 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private void showRoutePlanningUI() {
         locationButton.setVisibility(RelativeLayout.GONE);
 
-        ((RelativeLayout)findViewById(R.id.routePlanningLayout)).setVisibility(RelativeLayout.VISIBLE);
+        (findViewById(R.id.routePlanningLayout)).setVisibility(RelativeLayout.VISIBLE);
 
         LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(
                 RelativeLayout.LayoutParams.MATCH_PARENT, 0, 0.88f);
 
-        RelativeLayout mapLayout = (RelativeLayout)findViewById(R.id.mainMapLayout);
+        RelativeLayout mapLayout = findViewById(R.id.mainMapLayout);
         mapLayout.setLayoutParams(layoutParams1);
         mapLayout.requestLayout();
         mapLayout.getParent().requestLayout();
 
-        RouteTta tta = routeData.route.getTta(Route.TrafficPenaltyMode.DISABLED, 0);
+        RouteTta tta = routeData.route.getTtaExcludingTraffic(0);
         int duration = tta.getDuration();
         Date date = new Date();
         date.setTime(date.getTime() + duration * 1000);
@@ -1538,7 +1570,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         navMan.setMapUpdateMode(NavigationManager.MapUpdateMode.POSITION_ANIMATION);
 
         if(voiceSkin != null) {
-            navMan.setVoiceSkin(voiceSkin);
+            navMan.getVoiceGuidanceOptions().setVoiceSkin(voiceSkin);
         }
 
         // We set this variable to avoid nay kind of request before the area request

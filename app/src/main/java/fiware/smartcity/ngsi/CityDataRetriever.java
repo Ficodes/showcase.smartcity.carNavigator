@@ -277,6 +277,7 @@ public class CityDataRetriever extends AsyncTask<CityDataRequest, Integer, Map<S
         getIntegerJSONAttr(ParkingAttributes.TOTAL_SPOTS, obj, ParkingAttributes.TOTAL_SPOTS, attrs);
         getStringJSONAttr("name", obj, "name", attrs);
         getStringJSONAttr("description", obj, "description", attrs);
+        getBooleanJSONAttr("bookServiceAvailable", obj, "bookServiceAvailable", attrs);
     }
 
     private void fillPointOfInterest (JSONObject obj, String type,
@@ -464,6 +465,18 @@ public class CityDataRetriever extends AsyncTask<CityDataRequest, Integer, Map<S
 
         try {
             out = obj.getString(attr);
+            attrs.put(mappedAttr, out);
+        }
+        catch(JSONException e) { }
+    }
+
+    private void getBooleanJSONAttr(String attr, JSONObject obj, String mAttr,
+                                   Map<String, Object> attrs) {
+        Boolean out = null;
+        String mappedAttr = mAttr != null ? mAttr : attr;
+
+        try {
+            out = obj.getBoolean(attr);
             attrs.put(mappedAttr, out);
         }
         catch(JSONException e) { }

@@ -200,9 +200,17 @@ public class ParkingRenderer {
         circle.setFillColor(Color.parseColor("#770000FF"));
         map.addMapObject(circle);
 
-        MapMarker mapMarker = new MapMarker(coords,
-                RenderUtilities.createLabeledIcon(ctx,
-                        label, style, R.drawable.parking));
+        MapMarker mapMarker;
+        if (ent.attributes.containsKey("bookServiceAvailable") && (Boolean) ent.attributes.get("bookServiceAvailable")) {
+            mapMarker = new MapMarker(coords,
+                    RenderUtilities.createLabeledIcon(ctx,
+                            label, style, R.drawable.parking_book));
+        } else {
+             mapMarker = new MapMarker(coords,
+                    RenderUtilities.createLabeledIcon(ctx,
+                            label, style, R.drawable.parking));
+        }
+
 
         mapMarker.setOverlayType(MapOverlayType.FOREGROUND_OVERLAY);
         map.addMapObject(mapMarker);

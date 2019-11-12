@@ -43,6 +43,7 @@ import com.here.android.mpa.search.DiscoveryResult;
 import com.here.android.mpa.search.DiscoveryResultPage;
 import com.here.android.mpa.search.ErrorCode;
 import com.here.android.mpa.search.GeocodeRequest;
+import com.here.android.mpa.search.GeocodeResult;
 import com.here.android.mpa.search.PlaceLink;
 import com.here.android.mpa.search.ResultListener;
 import com.here.android.mpa.search.ReverseGeocodeRequest2;
@@ -558,10 +559,10 @@ public class RouteActivity implements LocationListener {
                                    final ResultListener<GeoCoordinate> listener) {
         GeocodeRequest req1 = new GeocodeRequest(locationStr);
         req1.setSearchArea(center, GEOCODE_SEARCH_AREA);
-        req1.execute(new ResultListener<List<Location>>() {
-            public void onCompleted(List<Location> data, ErrorCode errorCode) {
+        req1.execute(new ResultListener<List<GeocodeResult>>() {
+            public void onCompleted(List<GeocodeResult> data, ErrorCode errorCode) {
                 if (errorCode == ErrorCode.NONE && data != null && data.size() > 0) {
-                    listener.onCompleted(data.get(0).getCoordinate(), errorCode);
+                    listener.onCompleted(data.get(0).getLocation().getCoordinate(), errorCode);
                 } else {
                     listener.onCompleted(null, errorCode);
                 }
@@ -576,7 +577,7 @@ public class RouteActivity implements LocationListener {
 
     private void calculateRoute() {
         SharedPreferences.Editor edit = Application.mainActivity.
-                                    getPreferences(Activity.MODE_WORLD_WRITEABLE).edit();
+                                    getPreferences(Activity.MODE_PRIVATE).edit();
 
         edit.putString(Application.LAST_CITY_VISITED, routeData.city);
         edit.putString(Application.LAST_ORIGIN, routeData.origin);

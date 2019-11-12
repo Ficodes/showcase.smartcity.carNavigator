@@ -13,13 +13,13 @@ import java.util.Map;
  *
  */
 public class Application {
-    public static String SERVICE_URL = "http://192.168.2.166:7007/v2/entities";
+    public static String SERVICE_URL = "http://smartcity.lab.fiware.org:7007/v2/entities";
 
     public static MainActivity mainActivity = null;
 
     public static int THRESHOLD_DISTANCE = 4000;
     public static int DEFAULT_RADIUS = 400;
-    public static int DEFAULT_VIEW_RADIUS = 2000;
+    public static int DEFAULT_VIEW_RADIUS = 700;
 
     // Parking mode is on from 700 ms far away from destination
     public static int PARKING_DISTANCE = 700;
@@ -32,7 +32,7 @@ public class Application {
     public static String TRANSFER_RESULT = "Transfer-Result";
 
     // We will look for parkings not further than 2 km
-    public static int MAX_PARKING_DISTANCE = 2000;
+    public static int MAX_PARKING_DISTANCE = 4000;
 
     // Average radius for Ambient areas
     public static int AMBIENT_AREA_RADIUS = 800;
@@ -56,6 +56,7 @@ public class Application {
     public static String BIKE_HIRE_DOCK_TYPE   = "BikeHireDockingStation";
     public static String TRAFFIC_CAMERA_TYPE   = "TrafficCamera";
     public static String TRAFFIC_ISSUE_TYPE    = "Alert";
+    public static String PARKING_SPOT_TYPE     = "ParkingSpot";
 
     // It is used to mark any data type to be retrieved
     public static String ANY_ENTITY_TYPE =       "__any__";
@@ -115,7 +116,7 @@ public class Application {
     public static String LAST_DESTINATION = "Last_Destination";
     public static String IS_POI_DESTINATION = "is_poi";
 
-    public static String MARKET_URL = "https://market.opplafy.eu/";
+    public static String MARKET_URL = "http://smartcity.lab.fiware.org:8004";
 
     public static String BF_TOKEN = "bf_token";
     public static String BF_USER  = "bf_user";

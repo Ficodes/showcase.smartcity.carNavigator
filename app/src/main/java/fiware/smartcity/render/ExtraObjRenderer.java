@@ -77,14 +77,11 @@ public class ExtraObjRenderer {
         GeoCoordinate coords = new GeoCoordinate(ent.location[0], ent.location[1]);
 
         RenderStyle style = new RenderStyle();
-        style.textColor =  Color.BLACK;
+        style.textColor = Color.BLACK;
         style.textStyle = Typeface.BOLD;
 
         MapMarker mapMarker = new MapMarker(coords,
-                RenderUtilities.createLabeledIcon(ctx,
-                        name, style,
-                        icon
-                        ));
+                RenderUtilities.createLabeledIcon(ctx, name, style, icon));
 
         mapMarker.setOverlayType(MapOverlayType.FOREGROUND_OVERLAY);
         map.addMapObject(mapMarker);
